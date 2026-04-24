@@ -21,6 +21,7 @@ function analyzeSummary(data) {
             : data.killed_by_event.Entry;
     return {
         character: data.players[0].character.Entry,
+        ascension: data.ascension,
         win: data.win,
         playTime: data.run_time,
         seed: data.seed,
@@ -187,12 +188,14 @@ function analyzeDeckSize(data) {
     }));
 }
 
+// ==========================================================================
 function renderSummary(summary) {
     const el = document.getElementById("summary");
 
     el.innerHTML = `
     <h2>요약</h2>
     캐릭터: ${summary.character} <br>
+    승천: ${summary.ascension} <br>
     결과: ${summary.win ? "승리" : "패배"} <br>
     플레이 시간: ${summary.playTime}초 <br>
     시드: ${summary.seed} <br>
@@ -347,8 +350,11 @@ function createTooltipCallbacks(timeline) {
         afterBody: function (context) {
             const index = context[0].dataIndex;
             const t = timeline[index];
-
-            return `${roomtypeMap[t.type]}: ${t.roomType}`;
+            let result = `${roomtypeMap[t.type]}: ${t.roomType}`;
+            if (t.roomType === "NONE") {
+                result = `${roomtypeMap[t.type]}`;
+            }
+            return result;
         }
     };
 }

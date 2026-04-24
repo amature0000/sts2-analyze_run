@@ -62,6 +62,5 @@ public static class RunHistoryPostfix
         {
             GD.PrintErr($"[analyzerun] failed to dump: {e.Message}");
         }
-        GD.Print("[analyzerun] end process");
     }
 }

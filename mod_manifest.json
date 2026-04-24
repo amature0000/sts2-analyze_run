@@ -2,7 +2,7 @@
   "id": "sharerun",
   "name": "sharerun",
   "author": "amature0000",
-  "description": "extract run history for analyze",
+  "description": "extract & analyze run data",
   "version": "0.1.0",
   "has_pck": false,
   "has_dll": true,

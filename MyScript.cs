@@ -13,9 +13,9 @@ public static class ModStart
 {
     public static void ModInit()
     {
-		Harmony harmony = new Harmony("sharerun");
+		Harmony harmony = new Harmony("analyzerun");
         harmony.PatchAll();
-        GD.Print("[sharerun]Mod Initialized");
+        GD.Print("[analyzerun]Mod Initialized");
     }
 }
 
@@ -32,9 +32,9 @@ public static class RunHistoryPostfix
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         string rootDir = Directory.GetParent(baseDir).Parent.FullName;
         
-        ModFolderPath = Path.Combine(rootDir, "mods", "sharerun");
+        ModFolderPath = Path.Combine(rootDir, "mods", "analyzerun");
         HtmlPath = Path.Combine(ModFolderPath, "index.html");
-        DataJsPath = Path.Combine(ModFolderPath, "sharerun_history.js");
+        DataJsPath = Path.Combine(ModFolderPath, "analyzerun_history.js");
     }
 
     public static void Postfix(object __instance, RunHistory history)
@@ -43,24 +43,25 @@ public static class RunHistoryPostfix
         {
             if (history.MapPointHistory == null) return;
 
-            GD.Print("[sharerun] starting process");
-            string jsonString = JsonSerializer.Serialize(history);
-            string jsString = $"rundata = {jsonString};";
+            GD.Print("[analyzerun] dump process");
+            var options = new JsonSerializerOptions {WriteIndented = true};
+            string jsonString = JsonSerializer.Serialize(history, options);
+            string jsString = "rundata = " + jsonString + ";";
             System.IO.File.WriteAllText(DataJsPath, jsString);
-            GD.Print("[sharerun] ==> dumped run history");
+            GD.Print("[analyzerun] ==> dumped run history");
 
-            GD.Print("[sharerun] ==> opening browser");
+            GD.Print("[analyzerun] open process");
             if (!_browserOpened)
             {
                 Process.Start(new ProcessStartInfo(HtmlPath){ UseShellExecute = true });
                 _browserOpened = true;
-                GD.Print("[sharerun] == ==> opened browser");
+                GD.Print("[analyzerun] ==> opened browser");
             }
         }
         catch (Exception e)
         {
-            GD.PrintErr($"[sharerun] failed to dump: {e.Message}");
+            GD.PrintErr($"[analyzerun] failed to dump: {e.Message}");
         }
-        GD.Print("[sharerun] end process");
+        GD.Print("[analyzerun] end process");
     }
 }

@@ -1,6 +1,6 @@
 ﻿{
-  "id": "sharerun",
-  "name": "sharerun",
+  "id": "analyzerun",
+  "name": "analyzerun",
   "author": "amature0000",
   "description": "extract & analyze run data",
   "version": "0.1.0",

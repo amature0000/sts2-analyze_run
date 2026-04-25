@@ -14,13 +14,21 @@ const USELESS_PREFIX = [
     "POOR_SLEEP", "REGRET", "SHAME", "SPORE_MIND", "WRITHE", "SPOILS_MAP", "BYRDONIS_EGG", "LANTERN_KEY"
 ];
 
-function analyzeSummary(data) {
+const select = document.getElementById("playerSelect");
+const data = rundata;
+let currentPlayerIndex = 0;
+let turnTimeline; 
+let hpTimeline;
+let goldTimeline;
+let deckTimeline;
+
+function analyzeSummary(player) {
     const killedBy =
         data.killed_by_event.Entry === "NONE"
             ? data.killed_by_encounter.Entry
             : data.killed_by_event.Entry;
     return {
-        character: data.players[0].character.Entry,
+        character: player.character.Entry,
         ascension: data.ascension,
         win: data.win,
         playTime: data.run_time,
@@ -53,31 +61,13 @@ function analyzeDeck(deck) {
     return count;
 }
 
-function analyzeEvents(data) {
-    const history = data.map_point_history;
-
-    const events = [];
-
-    history.forEach(floor => {
-        floor.forEach(point => {
-            point.rooms.forEach(room => {
-                if (room.model_id.Category === "EVENT") {
-                    events.push(room.model_id.Entry);
-                }
-            });
-        });
-    });
-
-    return events;
-}
-
-function analyzeGold(data) {
+function analyzeGold(currentPlayerIndex) {
     const timeline = [];
     const points = analyzeInfos(data);
     let globalFloor = 1;
 
     points.forEach(({ point, act, floorInAct, type, roomType }) => {
-        const stats = point.player_stats[0];
+        const stats = point.player_stats[currentPlayerIndex];
 
         timeline.push({
             act,
@@ -92,13 +82,13 @@ function analyzeGold(data) {
     return timeline;
 }
 
-function analyzeHp(data) {
+function analyzeHp(currentPlayerIndex) {
     const timeline = [];
     const points = analyzeInfos(data);
     let globalFloor = 1;
 
     points.forEach(({ point, act, floorInAct, type, roomType }) => {
-        const stats = point.player_stats[0];
+        const stats = point.player_stats[currentPlayerIndex];
 
         timeline.push({
             act,
@@ -114,7 +104,7 @@ function analyzeHp(data) {
     return timeline;
 }
 
-function analyzeTurn(data) {
+function analyzeTurn() {
     const timeline = [];
     const points = analyzeInfos(data);
     let globalFloor = 1;
@@ -135,16 +125,16 @@ function analyzeTurn(data) {
     return timeline;
 }
 
-function analyzeDeckSize(data) {
+function analyzeDeckSize(currentPlayerIndex) {
     const reversedTimeline = [];
 
-    let deckSize = data.players[0].deck.length;
-    let uselessDeckSize = getInitialUselessCount(data.players[0].deck);
+    let deckSize = data.players[currentPlayerIndex].deck.length;
+    let uselessDeckSize = getInitialUselessCount(data.players[currentPlayerIndex].deck);
 
     const points = analyzeInfos(data).reverse();
 
     points.forEach(({ point, act, floorInAct, type, roomType }) => {
-        const stats = point.player_stats[0];
+        const stats = point.player_stats[currentPlayerIndex];
 
         reversedTimeline.push({
             act,
@@ -153,8 +143,8 @@ function analyzeDeckSize(data) {
             roomType,
             deckSize,
             uselessDeckSize
-        }); 
-        
+        });
+
         (stats.cards_gained || []).forEach(card => {
             const entry = card.id.Entry;
             deckSize -= 1;
@@ -218,15 +208,6 @@ function renderDeck(deckAnalysis) {
     }
 
     el.innerHTML = html;
-}
-
-function renderEvents(events) {
-    const el = document.getElementById("events");
-
-    el.innerHTML = `
-    <h2>이벤트</h2>
-    ${events.join("<br>")}
-  `;
 }
 
 let turnChart, hpChart, goldChart, deckChart;
@@ -307,24 +288,6 @@ function renderDeckChart(timeline) {
     );
 }
 
-document.getElementById("actButtons").addEventListener("click", (e) => {
-    const act = parseInt(e.target.getAttribute("data-act"));
-    renderCharts(act);
-});
-
-// ==========================================================================
-const data = rundata;
-const player = data.players[0];
-
-const summary = analyzeSummary(data);
-const deckAnalysis = analyzeDeck(player.deck);
-// const events = analyzeEvents(data);
-
-renderSummary(summary);
-renderDeck(deckAnalysis);
-// renderEvents(events);
-renderCharts(1);
-
 // ==========================================================================
 function createLineChart(ctx, labels, datasets, tooltipCallbacks, type = "line") {
     return new Chart(ctx, {
@@ -382,12 +345,6 @@ function filterAct(timeline, act) {
 }
 
 function renderCharts(act) {
-    const turnTimeline = analyzeTurn(data);
-    const hpTimeline = analyzeHp(data);
-    const goldTimeline = analyzeGold(data);
-    const deckTimeline = analyzeDeckSize(data);
-    console.log(deckTimeline);
-
     const filteredTurn = filterAct(turnTimeline, act);
     const filteredHp = filterAct(hpTimeline, act);
     const filteredGold = filterAct(goldTimeline, act);
@@ -400,7 +357,7 @@ function renderCharts(act) {
 }
 
 function isUseless(cardEntry) {
-  return USELESS_PREFIX.some(prefix => cardEntry.startsWith(prefix));
+    return USELESS_PREFIX.some(prefix => cardEntry.startsWith(prefix));
 }
 
 function getInitialUselessCount(deck) {
@@ -408,3 +365,41 @@ function getInitialUselessCount(deck) {
         isUseless(card.id.Entry)
     ).length;
 }
+
+// ==========================================================================
+
+rundata.players.forEach((p, i) => {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = `Player ${i + 1}`;
+    select.appendChild(option);
+});
+
+select.addEventListener("change", (e) => {
+    currentPlayerIndex = Number(e.target.value) || 0;
+    computeAll(currentPlayerIndex);
+});
+
+document.getElementById("actButtons").addEventListener("click", (e) => {
+    const act = parseInt(e.target.getAttribute("data-act"));
+    renderCharts(act, currentPlayerIndex);
+});
+
+function computeAll(currentPlayerIndex) {
+    const player = data.players[currentPlayerIndex];
+
+    turnTimeline = analyzeTurn();
+    hpTimeline = analyzeHp(currentPlayerIndex);
+    goldTimeline = analyzeGold(currentPlayerIndex);
+    deckTimeline = analyzeDeckSize(currentPlayerIndex);
+
+    const summary = analyzeSummary(player);
+    const deckAnalysis = analyzeDeck(player.deck);
+
+    renderSummary(summary);
+    renderDeck(deckAnalysis);
+
+    renderCharts(1, currentPlayerIndex);
+}
+
+computeAll(0);

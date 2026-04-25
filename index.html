@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <title>Run Analyzer</title>
@@ -7,20 +8,45 @@
     .chart_table {
       width: 70%;
     }
+
     .chart_row {
       display: flex;
     }
+
     .chart_container {
       flex: 1;
       height: 300px;
     }
+
     .spacer {
       height: 50px;
     }
+
+    #playerSelect {
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+      color: #333;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #playerSelect:hover {
+      border-color: #888;
+    }
+
+    #playerSelect:focus {
+      border-color: #555;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
+
 <body>
   <h1>Run Analyzer</h1>
+  <select id="playerSelect"></select>
 
   <div id="summary"></div>
   <div id="deck"></div>
@@ -54,4 +80,5 @@
   <script src="analyzerun_history.js"></script>
   <script src="main.js"></script>
 </body>
+
 </html>

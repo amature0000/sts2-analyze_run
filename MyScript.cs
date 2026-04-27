@@ -22,7 +22,6 @@ public static class ModStart
 [HarmonyPatch(typeof(NRunHistory), "DisplayRun")]
 public static class RunHistoryPostfix
 {
-    private static readonly string ModFolderPath;
     private static readonly string HtmlPath;
     private static readonly string DataJsPath;
     private static bool _browserOpened = false;
@@ -31,8 +30,8 @@ public static class RunHistoryPostfix
     {
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         string rootDir = Directory.GetParent(baseDir).Parent.FullName;
+        string ModFolderPath = Path.Combine(rootDir, "mods", "analyzerun");
         
-        ModFolderPath = Path.Combine(rootDir, "mods", "analyzerun");
         HtmlPath = Path.Combine(ModFolderPath, "index.html");
         DataJsPath = Path.Combine(ModFolderPath, "analyzerun_history.js");
     }
@@ -41,8 +40,6 @@ public static class RunHistoryPostfix
     {
         try
         {
-            if (history.MapPointHistory == null) return;
-
             GD.Print("[analyzerun] dump process");
             var options = new JsonSerializerOptions {WriteIndented = true};
             string jsonString = JsonSerializer.Serialize(history, options);

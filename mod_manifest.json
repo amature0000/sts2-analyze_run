@@ -3,7 +3,7 @@
   "name": "analyzerun",
   "author": "amature0000",
   "description": "extract & analyze run data",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "has_pck": false,
   "has_dll": true,
   "affects_gameplay": false

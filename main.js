@@ -17,7 +17,7 @@ const USELESS_PREFIX = [
 const select = document.getElementById("playerSelect");
 const data = rundata;
 let currentPlayerIndex = 0;
-let turnTimeline; 
+let turnTimeline;
 let hpTimeline;
 let goldTimeline;
 let deckTimeline;
@@ -191,6 +191,7 @@ function renderSummary(summary) {
     시드: ${summary.seed} <br>
     사망한 위치: ${summary.killedByEvent}
   `;
+    changeBackground(summary.character.toLowerCase());
 }
 
 function renderDeck(deckAnalysis) {

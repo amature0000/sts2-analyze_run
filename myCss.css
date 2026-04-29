@@ -1,0 +1,151 @@
+:root {
+  --bg-main: #121216;
+  --bg-card: #1e1e24;
+  --text-main: #e2e2e2;
+  --accent-gold: #d4af37;
+  --accent-hover: #f1c40f;
+  --border-radius: 8px;
+}
+
+body {
+  font-family: 'Pretendard', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7); 
+  
+  z-index: -1; 
+  pointer-events: none; 
+}
+
+h1 {
+  color: var(--accent-gold);
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  color: var(--text-main);
+  border-bottom: 2px solid var(--accent-gold);
+  padding-bottom: 8px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+#playerSelect {
+  padding: 10px 16px;
+  font-size: 16px;
+  border: 1px solid #444;
+  border-radius: var(--border-radius);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  min-width: 250px;
+}
+
+#playerSelect:hover {
+  border-color: var(--accent-gold);
+}
+
+#playerSelect:focus {
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+#summary, #deck {
+  background-color: var(--bg-card);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
+  box-sizing: border-box;
+}
+
+#actButtons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+#actButtons button {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid #444;
+  padding: 10px 30px;
+  font-size: 16px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#actButtons button:hover {
+  background-color: #2a2a35;
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  transform: translateY(-2px);
+}
+
+#actButtons button:active {
+  transform: translateY(0);
+}
+
+.chart_table {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart_row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.chart_container {
+  flex: 1;
+  height: 350px;
+  min-width: 0px;
+  background-color: var(--bg-card);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
+}
+
+.spacer {
+  height: 40px;
+}

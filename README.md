@@ -9,9 +9,7 @@ A simple Slay the Spire 2 mod for analyze run data.
 - Analyze&display run data
 
 ## Installation
-1. go to releases page and download `.zip` file
-2. Extract the downloaded `.zip` file.
-3. Move the extracted folder to your desired location
+This mod now supports on the [steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3804316994)
 
 ## demonstration
 <img width="2544" height="1314" alt="image" src="https://github.com/user-attachments/assets/dd5c2cda-e3f3-498c-8809-c0328e6418bc" />

@@ -22,18 +22,16 @@ public static class ModStart
 [HarmonyPatch(typeof(NRunHistory), "DisplayRun")]
 public static class RunHistoryPostfix
 {
+    private static readonly string currentModDir;
     private static readonly string HtmlPath;
     private static readonly string DataJsPath;
     private static bool _browserOpened = false;
 
     static RunHistoryPostfix()
     {
-        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        string rootDir = Directory.GetParent(baseDir).Parent.FullName;
-        string ModFolderPath = Path.Combine(rootDir, "mods", "analyzerun");
-        
-        HtmlPath = Path.Combine(ModFolderPath, "index.html");
-        DataJsPath = Path.Combine(ModFolderPath, "analyzerun_history.js");
+        currentModDir = Path.GetDirectoryName(typeof(RunHistoryPostfix).Assembly.Location);
+        HtmlPath = Path.Combine(currentModDir, "index.html");
+        DataJsPath = Path.Combine(currentModDir, "analyzerun_history.js");
     }
 
     public static void Postfix(object __instance, RunHistory history)

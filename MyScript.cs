@@ -10,12 +10,18 @@ using System.IO;
 
 [ModInitializer("ModInit")]
 public static class ModStart
-{
+{   
     public static void ModInit()
     {
-		Harmony harmony = new Harmony("analyzerun");
-        harmony.PatchAll();
-        GD.Print("[analyzerun]Mod Initialized");
+        try{
+            Harmony harmony = new Harmony("analyzerun");
+            harmony.PatchAll();
+            GD.Print("[analyzerun]Mod Initialized");
+        }
+        catch(Exception e)
+        {
+            GD.PrintErr($"[analyzerun] Mod initialization failed: {e}");
+        }
     }
 }
 
@@ -29,13 +35,29 @@ public static class RunHistoryPostfix
 
     static RunHistoryPostfix()
     {
-        currentModDir = Path.GetDirectoryName(typeof(RunHistoryPostfix).Assembly.Location);
-        HtmlPath = Path.Combine(currentModDir, "index.html");
-        DataJsPath = Path.Combine(currentModDir, "analyzerun_history.js");
+        try
+        {
+            currentModDir = Path.GetDirectoryName(typeof(RunHistoryPostfix).Assembly.Location);
+            HtmlPath = Path.Combine(currentModDir, "index.html");
+            DataJsPath = Path.Combine(currentModDir, "analyzerun_history.js");
+            
+            GD.Print("[analyzerun]Mod parameters Initialized");
+        }
+        catch (Exception e)
+        {
+            GD.PrintErr($"[analyzerun] Mod parameters Initialization failed: {e}");
+
+            currentModDir = "";
+            HtmlPath = "";
+            DataJsPath = "";
+        }
     }
 
     public static void Postfix(object __instance, RunHistory history)
     {
+        if(currentModDir=="") return;
+        if(HtmlPath=="") return;
+        if(DataJsPath=="") return;
         try
         {
             GD.Print("[analyzerun] dump process");
@@ -55,7 +77,7 @@ public static class RunHistoryPostfix
         }
         catch (Exception e)
         {
-            GD.PrintErr($"[analyzerun] failed to dump: {e.Message}");
+            GD.PrintErr($"[analyzerun] failed to dump: {e}");
         }
     }
 }
